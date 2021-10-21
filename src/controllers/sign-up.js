@@ -1,5 +1,6 @@
 import connection from '../database/database.js';
 import {validateSignUp} from '../validation/sign-up.js';
+import bcrypt from 'bcrypt';
 
 async function createAccount(req, res) {
     const signUpInfos = req.body;
@@ -9,28 +10,33 @@ async function createAccount(req, res) {
         return;
     }
     
-    const errors = validateSignUp.validate(signUpInfos)
-    if(errors) {
-        res.send(errors).status(400);
+    const validate = validateSignUp.validate({
+        name, 
+        email, 
+        password, 
+        confirmPassword
+    })
+    if(validate.error) {
+        res.status(400).send("Dados inseridos inválidos, tente novamente!");
         return;
     }
     try {
-
         const emailList = await connection.query(`SELECT email FROM users`);
         if(emailList.rows.some(dataEmail => dataEmail.email == email)) {
             res.status(401).send("Email já cadastrado!");
             return;
         }
-        
+        const passwordHash = bcrypt.hashSync(password, 10);
+
         await connection.query(`
-        INSERT 
-        INTO users (name, email, password) 
-        VALUES ($1, $2, $3)`, 
-        [name, email, password]);
+            INSERT INTO users 
+            (name, email, password) 
+            VALUES ($1, $2, $3)`, 
+            [name, email, passwordHash]
+        );
         res.sendStatus(201);
     } catch (err) {
-        console.log(err);
-        res.sendStatus(500);
+        res.status(500).send("Erro no servidor!");
     }
 
 }
