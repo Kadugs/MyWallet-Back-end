@@ -9,16 +9,11 @@ async function userLogin(req, res) {
         email, 
         password,
     })
-    if(validate.error) {
-        res.status(400).send("Dados inseridos inválidos, tente novamente!");
-        return;
-    }
+    if(validate.error) return res.status(400).send("Dados inseridos inválidos, tente novamente!");
+ 
     try {
         const database = await connection.query(`SELECT users.password, users.id FROM users where email = $1`, [email]);
-        if(database.rowCount === 0) {
-            res.status(401).send("Email não cadastrado, tente novamente ou crie uma conta!");
-            return;
-        }
+        if(database.rowCount === 0) return res.status(401).send("Email não cadastrado, tente novamente ou crie uma conta!");
         if(bcrypt.compareSync(password, database.rows[0].password)) {
             const token = uuid();
             await connection.query(`
@@ -27,8 +22,8 @@ async function userLogin(req, res) {
                 VALUES ($1, $2)`, 
                 [database.rows[0].id, token]
             )
-            res.send(token);
-            return;
+            return res.send(token);
+
         } else {
             res.status(401).send("Senha inválida!");
         }

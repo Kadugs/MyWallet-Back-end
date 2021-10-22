@@ -5,10 +5,7 @@ import bcrypt from 'bcrypt';
 async function createAccount(req, res) {
     const signUpInfos = req.body;
     const { name, email, password, confirmPassword } = signUpInfos;
-    if(password !== confirmPassword) {
-        res.status(401).send("Senha e confirmação da senha diferentes! Insira valores iguais");
-        return;
-    }
+    if(password !== confirmPassword) return res.status(401).send("Senha e confirmação da senha diferentes! Insira valores iguais");
     
     const validate = validateSignUp.validate({
         name, 
@@ -16,16 +13,10 @@ async function createAccount(req, res) {
         password, 
         confirmPassword
     })
-    if(validate.error) {
-        res.status(400).send("Dados inseridos inválidos, tente novamente!");
-        return;
-    }
+    if(validate.error) return res.status(400).send("Dados inseridos inválidos, tente novamente!");
     try {
         const emailList = await connection.query(`SELECT email FROM users`);
-        if(emailList.rows.some(dataEmail => dataEmail.email == email)) {
-            res.status(401).send("Email já cadastrado!");
-            return;
-        }
+        if(emailList.rows.some(dataEmail => dataEmail.email == email)) return res.status(401).send("Email já cadastrado!");
         const passwordHash = bcrypt.hashSync(password, 10);
 
         await connection.query(`
@@ -36,7 +27,7 @@ async function createAccount(req, res) {
         );
         res.sendStatus(201);
     } catch (err) {
-        res.status(500).send("Erro no servidor!");
+        return res.status(500).send("Erro no servidor!");
     }
 
 }
