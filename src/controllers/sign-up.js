@@ -6,7 +6,7 @@ async function createAccount(req, res) {
     const signUpInfos = req.body;
     const { name, email, password, confirmPassword } = signUpInfos;
     if(password !== confirmPassword) {
-        res.status(401).send("Senha e confirmação da senha diferentes! Insira Valores iguais");
+        res.status(401).send("Senha e confirmação da senha diferentes! Insira valores iguais");
         return;
     }
     
