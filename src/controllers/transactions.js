@@ -9,6 +9,7 @@ async function listUserTransactions(req, res) {
     try {
         const userInfo = await connection.query(`SELECT user_id FROM sessions WHERE token = $1`, [token]);
         if(userInfo.rowCount === 0) {
+            console.log(userInfo.rows, " ", token);
             return res.status(401).send("Erro de login");
         }
         const userTransactions = await connection.query('SELECT value, date, type FROM transactions WHERE user_id = $1', [userInfo.rows[0].user_id]);
