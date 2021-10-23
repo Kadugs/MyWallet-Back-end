@@ -12,7 +12,7 @@ async function listUserTransactions(req, res) {
             console.log(userInfo.rows, " ", token);
             return res.status(401).send("Erro de login");
         }
-        const userTransactions = await connection.query('SELECT value, date, type FROM transactions WHERE user_id = $1', [userInfo.rows[0].user_id]);
+        const userTransactions = await connection.query('SELECT value, date, type, name FROM transactions WHERE user_id = $1', [userInfo.rows[0].user_id]);
         return res.send(userTransactions.rows);
     } catch (error) {
         console.log(error);
@@ -26,9 +26,9 @@ async function postTransaction(req, res) {
     if (!token) return res.sendStatus(401);
     
     const transaction = req.body;
-    const {value, type} = transaction;
+    const {value, type, name} = transaction;
     if(type !== "out" && type !== "in") return res.status(400).send("tipo de transação inválida");
-    const validate = validateTransaction.validate({value, type});
+    const validate = validateTransaction.validate({value, type, name});
     if(validate.error) return res.status(400).send("Dados inseridos inválidos, tente novamente!");
     const date = dayjs().format("DD/MM/YYYY");
     
@@ -38,9 +38,9 @@ async function postTransaction(req, res) {
         
         await connection.query(`
             INSERT INTO transactions 
-                (value, user_id, date, type) 
-                VALUES ($1, $2, $3, $4)`, 
-            [value, userId.rows[0].user_id, date, type]
+                (value, user_id, date, type, name) 
+                VALUES ($1, $2, $3, $4, $5)`, 
+            [value, userId.rows[0].user_id, date, type, name]
         );
         res.sendStatus(201);
     } catch (error) {
