@@ -30,7 +30,7 @@ async function userLogin(req, res) {
             return res.send({
                 token,
                 name: database.rows[0].name,
-            });
+            }).status(200);
 
         } else {
             res.status(401).send("Senha inválida!");

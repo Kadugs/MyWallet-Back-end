@@ -21,6 +21,4 @@ app.delete('/sign-out', signOut);
 app.get('/transactions', listUserTransactions);
 app.post('/transactions', postTransaction);
 
-
-//Configura a porta;
-app.listen(4000); 
+export default app;
