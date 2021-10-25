@@ -64,7 +64,8 @@ CREATE TABLE public.transactions (
     value integer,
     user_id integer,
     date date,
-    type text
+    type text,
+    name text
 );
 
 
@@ -154,7 +155,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.sessions (id, user_id, token) FROM stdin;
-29	4	e5c816ba-4df2-4141-86a3-d06ec89d9456
+40	4	a980681a-c7df-4de8-82c2-180748cfbf09
 \.
 
 
@@ -162,15 +163,10 @@ COPY public.sessions (id, user_id, token) FROM stdin;
 -- Data for Name: transactions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.transactions (id, value, user_id, date, type) FROM stdin;
-1	200	1	2021-10-22	in
-2	20	1	2021-10-22	out
-3	20	1	2021-10-22	out
-4	20	1	2021-10-22	out
-6	100	1	2021-10-22	out
-7	100	1	2021-10-22	out
-8	100	1	2021-10-22	in
-9	100	1	2021-10-22	in
+COPY public.transactions (id, value, user_id, date, type, name) FROM stdin;
+10	20	4	2021-10-23	in	biscoito
+11	15	4	2021-10-23	out	pão
+12	123	4	2021-10-23	in	salario
 \.
 
 
@@ -189,14 +185,14 @@ COPY public.users (id, name, email, password) FROM stdin;
 -- Name: sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.sessions_id_seq', 29, true);
+SELECT pg_catalog.setval('public.sessions_id_seq', 40, true);
 
 
 --
 -- Name: transactions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.transactions_id_seq', 9, true);
+SELECT pg_catalog.setval('public.transactions_id_seq', 12, true);
 
 
 --

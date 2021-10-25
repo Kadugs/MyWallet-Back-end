@@ -23,7 +23,7 @@ async function listUserTransactions(req, res) {
 async function postTransaction(req, res) {
     const authorization = req.headers['authorization'];
     const token = authorization?.replace('Bearer ', '');
-    if (!token) return res.sendStatus(401);
+    if (!token) return res.status(401).send("token inválido");
     
     const transaction = req.body;
     const {value, type, name} = transaction;
