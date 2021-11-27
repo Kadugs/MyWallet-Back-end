@@ -1,16 +1,21 @@
 import connection from '../database/database.js';
 
 async function signOut(req, res) {
-    const authorization = req.headers['authorization'];
-    const token = authorization?.replace('Bearer ', '');
-    if (!token) return res.sendStatus(401);
-    try {
-        await connection.query(`DELETE FROM sessions WHERE token = $1`, [token]);
-        res.sendStatus(204);
-    } catch {
-        res.sendStatus(500);
-    }
+  const newLocal = 'authorization';
+  const authorization = req.headers[newLocal];
+  const token = authorization?.replace('Bearer ', '');
+  if (!token) return res.sendStatus(401);
+  try {
+    await connection.query(
+      `
+    DELETE FROM
+     sessions WHERE token = $1`,
+      [token],
+    );
+    return res.sendStatus(204);
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(500);
+  }
 }
-export {
-    signOut,
-}
+export { signOut };
