@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { listUserTransactions, postTransaction } from './controllers/transactions.js';
 import { createAccount } from './controllers/sign-up.js';
+import { verifyToken } from './middlewares.js';
 import { userLogin } from './controllers/sign-in.js';
 import { signOut } from './controllers/sign-out.js';
 
@@ -19,7 +20,7 @@ app.post('/sign-up', createAccount);
 app.delete('/sign-out', signOut);
 
 // TRANSACTIONS
-app.get('/transactions', listUserTransactions);
-app.post('/transactions', postTransaction);
+app.get('/transactions', verifyToken, listUserTransactions);
+app.post('/transactions', verifyToken, postTransaction);
 
 export default app;

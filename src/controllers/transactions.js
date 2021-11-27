@@ -1,19 +1,15 @@
 import dayjs from 'dayjs';
-import connection from '../database/database.js';
+import connection from '../database.js';
 import { validateTransaction } from '../validation/transactions.js';
 
 async function listUserTransactions(req, res) {
   const { authorization } = req.headers;
   const token = authorization?.replace('Bearer ', '');
-  if (!token) return res.sendStatus(401);
   try {
     const userInfo = await connection.query(
       'SELECT user_id FROM sessions WHERE token = $1',
       [token],
     );
-    if (userInfo.rowCount === 0) {
-      return res.status(401).send('Erro de login');
-    }
     const userTransactions = await connection.query(
       'SELECT value, date, type, name FROM transactions WHERE user_id = $1',
       [userInfo.rows[0].user_id],
@@ -28,7 +24,6 @@ async function listUserTransactions(req, res) {
 async function postTransaction(req, res) {
   const { authorization } = req.headers;
   const token = authorization?.replace('Bearer ', '');
-  if (!token) return res.status(401).send('token inválido');
 
   const transaction = req.body;
   const { value, type, name } = transaction;
@@ -46,7 +41,6 @@ async function postTransaction(req, res) {
       'SELECT user_id FROM sessions WHERE token = $1',
       [token],
     );
-    if (userId.rowCount === 0) return res.status(401).send('Erro de login');
 
     await connection.query(
       `

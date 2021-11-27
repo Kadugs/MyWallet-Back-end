@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { validateSignUp } from '../validation/sign-up.js';
-import connection from '../database/database.js';
+import connection from '../database.js';
 
 async function createAccount(req, res) {
   const signUpInfos = req.body;

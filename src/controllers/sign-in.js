@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
-import connection from '../database/database.js';
+import connection from '../database.js';
 import { validateSignIn } from '../validation/sign-in.js';
 
 async function userLogin(req, res) {
@@ -40,14 +40,12 @@ async function userLogin(req, res) {
                 VALUES ($1, $2)`,
         [database.rows[0].id, token],
       );
-      return res
-        .send({
-          token,
-          name: database.rows[0].name,
-        })
-        .status(200);
+      return res.status(200).send({
+        token,
+        name: database.rows[0].name,
+      });
     }
-    return res.status(401).send('Senha inválida!');
+    return res.status(409).send('Senha inválida!');
   } catch {
     return res.status(500).send('Erro no servidor!');
   }

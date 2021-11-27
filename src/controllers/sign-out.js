@@ -1,4 +1,4 @@
-import connection from '../database/database.js';
+import connection from '../database.js';
 
 async function signOut(req, res) {
   const newLocal = 'authorization';
