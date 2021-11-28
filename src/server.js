@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
+import '../setup.js';
 import app from './app.js';
 
-// Configura a porta;
-app.listen(4000, () => {
-  console.log('server running on port 4000');
+app.listen(process.env.PORT, () => {
+  console.log(`server running on port ${process.env.PORT}`);
 });
