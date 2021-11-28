@@ -30,7 +30,7 @@ describe('sign-in', () => {
       password: 'passwords',
     };
     const result = await supertest(app).post('/sign-in').send(body);
-    expect(result.status).toBe(401);
+    expect(result.status).toBe(400);
   });
   test('return 200 for a valid email and password', async () => {
     const body = {
@@ -46,31 +46,41 @@ describe('sign-in', () => {
 });
 
 describe('sing-up', () => {
-  beforeAll(async () => {
-    await connection.query('DELETE FROM users;');
-  });
+  const email = faker.internet.email();
   test('return 201 for a valid email', async () => {
     const body = {
-      name: 'test',
-      email: 'signUp@test.com',
+      name: faker.name.findName(),
+      email,
       password: 'test',
       confirmPassword: 'test',
     };
     const result = await supertest(app).post('/sign-up').send(body);
     expect(result.status).toBe(201);
   });
+  test('return 400 for differents passwords', async () => {
+    const body = {
+      name: faker.name.findName(),
+      email: faker.internet.email(),
+      password: 'test1',
+      confirmPassword: 'test2',
+    };
+    const result = await supertest(app).post('/sign-up').send(body);
+    expect(result.status).toBe(401);
+  });
+  test('return 401 for an already registered email', async () => {
+    const body = {
+      name: faker.name.findName(),
+      email,
+      password: 'test',
+      confirmPassword: 'test',
+    };
+    const result = await supertest(app).post('/sign-up').send(body);
+    expect(result.status).toBe(401);
+  });
+  afterAll(async () => {
+    await connection.query('DELETE FROM users;');
+  });
 });
-test('return 401 for an already registered email', async () => {
-  const body = {
-    name: 'test',
-    email: 'signUp@test.com',
-    password: 'test',
-    confirmPassword: 'test',
-  };
-  const result = await supertest(app).post('/sign-up').send(body);
-  expect(result.status).toBe(401);
-});
-
 afterAll(() => {
   connection.end();
 });

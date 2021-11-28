@@ -1,26 +1,19 @@
 import express from 'express';
 import cors from 'cors';
-import { listUserTransactions, postTransaction } from './controllers/transactions.js';
-import { createAccount } from './controllers/sign-up.js';
+import * as userController from './controllers/userController.js';
+import * as transactionController from './controllers/transactionController.js';
 import { verifyToken } from './middlewares.js';
-import { userLogin } from './controllers/sign-in.js';
-import { signOut } from './controllers/sign-out.js';
 
-// Para criar um servidor;
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// SIGN-IN
-app.post('/sign-in', userLogin);
-// SIGN-UP
-app.post('/sign-up', createAccount);
-// SIGN-OUT
-app.delete('/sign-out', signOut);
+app.post('/sign-in', userController.signIn);
+app.post('/sign-up', userController.signUp);
+app.delete('/sign-out', verifyToken, userController.signOut);
 
-// TRANSACTIONS
-app.get('/transactions', verifyToken, listUserTransactions);
-app.post('/transactions', verifyToken, postTransaction);
+app.get('/transactions', verifyToken, transactionController.getTransactions);
+app.post('/transactions', verifyToken, transactionController.postTransaction);
 
 export default app;

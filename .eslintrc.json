@@ -17,6 +17,9 @@
     ],
     "no-console": [2, { "allow": ["warn", "error"] }],
     "import/prefer-default-export": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "operator-linebreak": ["off", "after"],
+    "no-nested-ternary": "off",
+    "react/prop-types": "off"
   }
 }
