@@ -4,7 +4,7 @@ async function createSession({ user, token }) {
   await connection.query(
     `
       DELETE FROM sessions 
-      WHERE user_id = $1`,
+      WHERE user_id = $1;`,
     [user.id],
   );
   const result = await connection.query(
@@ -12,7 +12,7 @@ async function createSession({ user, token }) {
       INSERT INTO sessions 
       (user_id, token) 
       VALUES ($1, $2)
-      RETURNING *`,
+      RETURNING *;`,
     [user.id, token],
   );
   return result?.rows[0];
@@ -21,7 +21,7 @@ async function deleteSession(token) {
   await connection.query(
     `
     DELETE FROM
-     sessions WHERE token = $1`,
+     sessions WHERE token = $1;`,
     [token],
   );
 }

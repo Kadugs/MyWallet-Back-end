@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "NODE_ENV=production node src/server.js",
-    "local": "PORT=4000 nodemon src/server",
+    "local": "PORT=4000 nodemon src/server.js",
     "test": "NODE_ENV=test npx jest --watch"
   },
   "devDependencies": {
