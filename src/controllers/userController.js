@@ -2,11 +2,15 @@ import * as userService from '../services/userService.js';
 
 async function signIn(req, res) {
   const { email, password } = req.body;
-  const user = await userService.authSignIn({ email, password });
-  if (!user) {
-    return res.status(400).send('Dados inseridos inválidos, tente novamente!');
+  try {
+    const user = await userService.authSignIn({ email, password });
+    if (!user) {
+      return res.status(400).send('Dados inseridos inválidos, tente novamente!');
+    }
+    return res.status(200).send(user);
+  } catch {
+    return res.sendStatus(500);
   }
-  return res.status(200).send(user);
 }
 
 async function signUp(req, res) {
@@ -17,24 +21,32 @@ async function signUp(req, res) {
     Senha e confirmação da senha diferentes! Insira valores iguais
     `);
   }
-  const user = await userService.authSignUp({ name, email, password, confirmPassword });
-  if (user === undefined) {
-    return res.status(401).send('Email já cadastrado!');
-  }
-  if (user === null) {
-    return res.status(400).send(`
+  try {
+    const user = await userService.authSignUp({ name, email, password, confirmPassword });
+    if (user === undefined) {
+      return res.status(401).send('Email já cadastrado!');
+    }
+    if (user === null) {
+      return res.status(400).send(`
     Dados inseridos inválidos, tente novamente!
     `);
-  }
+    }
 
-  return res.sendStatus(201);
+    return res.sendStatus(201);
+  } catch {
+    return res.sendStatus(500);
+  }
 }
 
 async function signOut(req, res) {
   const { authorization } = req.headers;
   const token = authorization?.replace('Bearer ', '');
-  await userService.requestFinishSession(token);
-  return res.sendStatus(204);
+  try {
+    await userService.requestFinishSession(token);
+    return res.sendStatus(204);
+  } catch {
+    return res.sendStatus(500);
+  }
 }
 
 export { signIn, signUp, signOut };

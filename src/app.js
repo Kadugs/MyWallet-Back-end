@@ -6,15 +6,7 @@ import { verifyToken } from './middlewares.js';
 
 const app = express();
 
-app.use(
-  cors({
-    allowedHeaders: ['sessionId', 'Content-Type'],
-    exposedHeaders: ['sessionId'],
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-  }),
-);
+app.use(cors());
 app.use(express.json());
 
 app.post('/sign-in', userController.signIn);
