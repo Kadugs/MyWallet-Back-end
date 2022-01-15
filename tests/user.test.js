@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import '../setup.js';
+import '../src/setup.js';
 import faker from 'faker';
 import supertest from 'supertest';
 import bcrypt from 'bcrypt';
